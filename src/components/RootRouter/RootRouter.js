@@ -30,9 +30,8 @@ export default () => (
           */}
 
           <Route path="/login" component={LoginForm} exact />
-          <PrivateRoute path="AppRouter" component={AppRouter} />
+          <PrivateRoute path="/app" component={AppRouter} />
           <Redirect to="/login" />
-          
         </Switch>
       </BrowserRouter>
     </AuthProvider>

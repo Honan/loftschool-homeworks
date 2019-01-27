@@ -11,12 +11,13 @@
 // используйте стили из AppRouter.module.css
 
 import React, { Component } from 'react';
-import { Route, Link, Switch } from 'react-router-dom';
+import { Route, Switch, NavLink } from 'react-router-dom';
 import Home from '../Home';
 import InboxList from '../InboxList';
 import OutboxList from '../OutboxList';
 import InboxMail from '../InboxMail';
 import OutboxMail from '../OutboxMail';
+import cx from 'classnames';
 
 import styles from './AppRouter.module.css';
 
@@ -24,18 +25,7 @@ class AppRouter extends Component {
   render() {
     const {
       computedMatch: match,
-      location: { pathname }
     } = this.props;
-
-    let title = 'Home';
-    
-    if(/^\/app\/inbox.*/.test(pathname)){
-      title = 'Inbox';
-    }
-
-    if(/^\/app\/outbox.*/.test(pathname)){
-      title = 'Outbox';
-    }
 
     return (
       <div className={styles.wrapper}>
@@ -43,39 +33,39 @@ class AppRouter extends Component {
           <nav className={styles.nav}>
             <ul className={`${styles.navList} t-nav-list`}>
               <li className={styles.navElement}>
-                <Link
-                  className={`${styles.link} t-link-home ${
-                    pathname === '/app' ? 'active' : null
-                  }`}
+                <NavLink
+                  className={cx(styles.link, 't-link-home')}
                   to={`${match.url}`}
                 >
                   Home
-                </Link>
+                </NavLink>
               </li>
               <li className={styles.navElement}>
-                <Link
-                  className={`${styles.link} t-link-inbox ${
-                    pathname === '/app/inbox' ? 'active' : null
-                  }`}
+                <NavLink
+                  className={cx(styles.link, 't-link-inbox')}
                   to={`${match.url}/inbox`}
                 >
                   Inbox
-                </Link>
+                </NavLink>
               </li>
               <li className={styles.navElement}>
-                <Link
-                  className={`${styles.link} t-link-outbox ${
-                    pathname === '/app/outbox' ? 'active' : null
-                  }`}
+                <NavLink
+                  className={cx(styles.link, 't-link-outbox')}
                   to={`${match.url}/outbox`}
                 >
                   Outbox
-                </Link>
+                </NavLink>
               </li>
             </ul>
           </nav>
           <div className={styles.content}>
-            <h3 className={styles.title}>{title}</h3>
+            <h3 className={styles.title}>
+            <Switch>
+                <Route path="/app" exact  render={() => 'Home'} />
+                <Route path="/app/outbox" component={this.renderOutboxTitle} />
+                <Route path="/app/inbox" component={this.renderInboxTitle} />
+              </Switch>
+            </h3>
             <Switch>
               <Route path={`${match.path}`} component={Home} exact />
               <Route 
@@ -95,6 +85,8 @@ class AppRouter extends Component {
       </div>
     );
   }
+  renderOutboxTitle = () => 'Outbox';
+  renderInboxTitle = () => 'Inbox';
 }
 
 export default AppRouter;

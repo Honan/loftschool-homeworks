@@ -22,7 +22,7 @@ class Show extends Component {
 
   render() {
     const { showId, data } = this.state;
-    // console.log(this.props.key)
+    console.log(this.props);
     let info = '';
     if (!data) {
       if (showId) info = 'Загрузка шоу с id ' + showId;

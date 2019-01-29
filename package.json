@@ -17,6 +17,8 @@
     "cypress:run": "cypress run"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
     "cypress": "^3.1.0",
     "enzyme": "^3.6.0",
     "enzyme-adapter-react-16": "^1.5.0",
@@ -24,5 +26,11 @@
     "eslint-plugin-react": "^7.11.1",
     "eslint-plugin-react-perf": "^2.0.9",
     "surge": "^0.20.1"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

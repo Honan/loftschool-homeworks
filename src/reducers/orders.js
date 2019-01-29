@@ -8,7 +8,60 @@ import { ADD_INGREDIENT } from '../actions/ingredients';
 // Он поможет понять, какие значения должен возвращать редьюсер.
 
 export default (state = [], action) => {
+  const curItem = state.find(item => item.id === action.payload);
+
+  const returnMap = insertObj =>
+    state.map(item => (item.id === insertObj.id ? insertObj : item));
+
   switch (action.type) {
+    case CREATE_NEW_ORDER:
+      return [
+        ...state,
+        {
+          id: action.payload.id,
+          recipe: action.payload.recipe,
+          ingredients: [],
+          position: 'clients'
+        }
+      ];
+
+    case MOVE_ORDER_NEXT:
+      switch (curItem.position) {
+        case 'clients':
+          curItem.position = 'conveyor_1';
+          break;
+        case 'conveyor_4':
+          if (curItem.recipe.length === curItem.ingredients.length)
+            curItem.position = 'finish';
+          break;
+        default:
+          curItem.position =
+            'conveyor_' + (Number(curItem.position.slice(-1)) + 1);
+      }
+
+      return returnMap(curItem);
+
+    case MOVE_ORDER_BACK:
+      if (curItem.position === 'conveyor_1') return state;
+
+      curItem.position = 'conveyor_' + (Number(curItem.position.slice(-1)) - 1);
+
+      return returnMap(curItem);
+
+    case ADD_INGREDIENT:
+      const ingrPosition = state.find(
+        item => item.position === action.payload.from
+      );
+
+      if (!~ingrPosition.recipe.indexOf(action.payload.ingredient))
+        return state;
+
+      ingrPosition.ingredients = [
+        ...ingrPosition.ingredients,
+        action.payload.ingredient
+      ];
+
+      return returnMap(ingrPosition);
     default:
       return state;
   }

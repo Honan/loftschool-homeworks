@@ -8,10 +8,6 @@ import { ADD_INGREDIENT } from '../actions/ingredients';
 // Он поможет понять, какие значения должен возвращать редьюсер.
 
 export default (state = [], action) => {
-  const curItem = state.find(item => item.id === action.payload);
-
-  const returnMap = insertObj =>
-    state.map(item => (item.id === insertObj.id ? insertObj : item));
 
   switch (action.type) {
     case CREATE_NEW_ORDER:
@@ -26,6 +22,8 @@ export default (state = [], action) => {
       ];
 
     case MOVE_ORDER_NEXT:
+    var curItem = {...state.find(item => item.id === action.payload)};
+
       switch (curItem.position) {
         case 'clients':
           curItem.position = 'conveyor_1';
@@ -39,21 +37,28 @@ export default (state = [], action) => {
             'conveyor_' + (Number(curItem.position.slice(-1)) + 1);
       }
 
-      return returnMap(curItem);
+      return state.map(item => (item.id === curItem.id ? curItem : item))
 
     case MOVE_ORDER_BACK:
+      var curItem = {...state.find(item => item.id === action.payload)};
+
       if (curItem.position === 'conveyor_1') return state;
 
       curItem.position = 'conveyor_' + (Number(curItem.position.slice(-1)) - 1);
 
-      return returnMap(curItem);
+      return state.map(item => (item.id === curItem.id ? curItem : item));
 
     case ADD_INGREDIENT:
-      const ingrPosition = state.find(
-        item => item.position === action.payload.from
-      );
+      const ingrPosition = {...state.find(
+        item => item.position === action.payload.from)
+      }
+
+      debugger;
 
       if (!~ingrPosition.recipe.indexOf(action.payload.ingredient))
+        return state;
+
+      if(ingrPosition.ingredients.includes(action.payload.ingredient)) 
         return state;
 
       ingrPosition.ingredients = [
@@ -61,7 +66,7 @@ export default (state = [], action) => {
         action.payload.ingredient
       ];
 
-      return returnMap(ingrPosition);
+      return state.map(item => (ingrPosition.id === item.id ? ingrPosition : item));
     default:
       return state;
   }
